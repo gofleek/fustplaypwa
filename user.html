@@ -866,7 +866,6 @@ function toggleFullscreen(){
     var req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
     if(req){req.call(el);btn.textContent='⊡';}
     else{
-      // iOS Safari: no fullscreen API — toggle a "fake fullscreen" via scroll lock hint
       btn.title='Fullscreen not supported on this browser';
       btn.style.opacity='0.4';
     }
@@ -882,6 +881,33 @@ function toggleFullscreen(){
     document.getElementById('btnFullscreen').textContent=isFS?'⊡':'⛶';
   });
 });
+
+// Mobile: hide the button and auto-fullscreen on first touch
+(function(){
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  if(!isMobile) return;
+
+  // Hide the button — fullscreen is handled automatically
+  var btn = document.getElementById('btnFullscreen');
+  if(btn) btn.style.display = 'none';
+
+  function goFullscreen(){
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if(req && !(document.fullscreenElement || document.webkitFullscreenElement)){
+      req.call(el).catch(function(){});
+    }
+  }
+
+  // Try immediately (works in PWA standalone mode)
+  goFullscreen();
+
+  // Fallback: trigger on first touch (satisfies browser gesture requirement)
+  document.addEventListener('touchstart', function onFirstTouch(){
+    goFullscreen();
+    document.removeEventListener('touchstart', onFirstTouch);
+  }, {once: true, passive: true});
+})();
 
 // ── LAST TRICK DISPLAY ───────────────────────────────────
 // Stores the last completed trick: array of {player, card} plus winningSeat
