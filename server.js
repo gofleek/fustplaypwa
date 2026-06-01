@@ -10,7 +10,7 @@ const POINT_MAP = { J:3, 9:2, A:1, 10:1, K:0, Q:0, 8:0, 7:0 };
 const RANK_MAP  = { J:8, 9:7, A:6, 10:5, K:4, Q:3, 8:2, 7:1 };
 const SEAT_NAMES= ["South","West","North","East"];
 const AI_TAKEOVER_MS   = 20 * 1000;
-const ROOM_IDLE_CLEANUP= 2 * 60 * 60 * 1000; // 2 hours
+const ROOM_IDLE_CLEANUP= 7 * 24 * 60 * 60 * 1000; // 7 days
 
 // ════════════════════════════════════════════════════════
 //  PERSISTENCE
@@ -78,12 +78,13 @@ function serializeRoom(room) {
     return out;
 }
 
-// Periodic autosave every 30 seconds
-setInterval(saveAll, 30 * 1000);
+// Periodic autosave every 10 seconds — keeps data safe across Render deploys
+setInterval(saveAll, 10 * 1000);
 
-// Save on clean shutdown
+// Save on clean shutdown (Render sends SIGTERM before stopping)
 process.on("SIGTERM", () => { saveAll(); process.exit(0); });
 process.on("SIGINT",  () => { saveAll(); process.exit(0); });
+process.on("SIGHUP",  () => { saveAll(); process.exit(0); });
 
 // ── Track a player in playersDB
 function trackPlayer(clientId, name) {
@@ -203,13 +204,12 @@ function loadRoomsFromDisk() {
         // Skip expired rooms
         if (Date.now() - (data.lastActivity||0) > ROOM_IDLE_CLEANUP) continue;
 
+        // Read the saved aiTakeover BEFORE overwriting it below
+        const savedAiTakeover = Array.isArray(data.aiTakeover) ? [...data.aiTakeover] : [false,false,false,false];
+
         // Restore runtime fields
         data.lastActivityPerSeat = [Date.now(),Date.now(),Date.now(),Date.now()];
         data.aiTakeover = [false,false,false,false];
-
-        // If all seats were AI-controlled when saved (all humans had left), reset to waiting.
-        // This prevents a stale mid-game from being shown when a player re-enters after restart.
-        const savedAiTakeover = Array.isArray(data.aiTakeover) ? data.aiTakeover : [false,false,false,false];
         const hadNoHumans = [0,1,2,3].every(i => !data.seats[i] || savedAiTakeover[i]);
         if (["bidding","trump","playing","finished"].includes(data.phase) && hadNoHumans) {
             // Reset to clean waiting state — nobody was playing, no reason to resume
