@@ -1,0 +1,57 @@
+[
+  {
+    "matchId": "7MJXTW_101_mpl5qseg",
+    "roomId": "7MJXTW",
+    "roomName": "Break",
+    "finishedAt": 1779710606153,
+    "handNumber": 101,
+    "winner": 1,
+    "team1Score": -1,
+    "team2Score": -6,
+    "players": []
+  },
+  {
+    "matchId": "5DA6UJ_19_mpldtjau",
+    "roomId": "5DA6UJ",
+    "roomName": "Break",
+    "finishedAt": 1779724171255,
+    "handNumber": 19,
+    "winner": 1,
+    "team1Score": 1,
+    "team2Score": -6,
+    "players": []
+  },
+  {
+    "matchId": "JE6RHH_12_mpn8fckz",
+    "roomId": "JE6RHH",
+    "roomName": "Break",
+    "finishedAt": 1779836043635,
+    "handNumber": 12,
+    "winner": 2,
+    "team1Score": -6,
+    "team2Score": 4,
+    "players": []
+  },
+  {
+    "matchId": "XEZQ7E_35_mpnto49m",
+    "roomId": "XEZQ7E",
+    "roomName": "Break",
+    "finishedAt": 1779871724698,
+    "handNumber": 35,
+    "winner": 2,
+    "team1Score": -6,
+    "team2Score": 3,
+    "players": []
+  },
+  {
+    "matchId": "XEZQ7E_38_mpnvcj8w",
+    "roomId": "XEZQ7E",
+    "roomName": "Break",
+    "finishedAt": 1779874543472,
+    "handNumber": 38,
+    "winner": 2,
+    "team1Score": -6,
+    "team2Score": 4,
+    "players": []
+  }
+]

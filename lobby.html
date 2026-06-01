@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>29 Card Game</title>
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0a1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cards">
+<link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;min-height:100%;background:#06080d;color:#e8eaf6;overflow-x:hidden;}
+
+/* PARTICLES BG */
+#bg{position:fixed;top:0;right:0;bottom:0;left:0;z-index:0;overflow:hidden;pointer-events:none;}
+.suit-particle{position:absolute;opacity:0;-webkit-animation:drift linear infinite;animation:drift linear infinite;}
+@-webkit-keyframes drift{0%{-webkit-transform:translateY(100vh) rotate(0);transform:translateY(100vh) rotate(0);opacity:0}10%{opacity:.12}90%{opacity:.08}100%{-webkit-transform:translateY(-120px) rotate(360deg);transform:translateY(-120px) rotate(360deg);opacity:0}}
+@keyframes drift{0%{transform:translateY(100vh) rotate(0);opacity:0}10%{opacity:.12}90%{opacity:.08}100%{transform:translateY(-120px) rotate(360deg);opacity:0}}
+
+/* LAYOUT */
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:clamp(16px,4vw,40px) clamp(12px,3vw,32px) 60px;}
+
+/* HEADER */
+.hero{text-align:center;padding:clamp(24px,5vh,52px) 0 clamp(18px,4vh,38px);}
+.hero-title{font-size:clamp(28px,6vw,56px);font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,#ffd54f,#ff8f00,#ffd54f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:6px;}
+.hero-suits{font-size:clamp(18px,3.5vw,32px);letter-spacing:6px;margin-bottom:10px;opacity:.7;}
+.hero-sub{font-size:clamp(11px,1.8vw,15px);color:#5a8aaa;letter-spacing:.3px;}
+
+/* STAT PILLS */
+.stats-row{display:-webkit-flex;display:flex;gap:clamp(8px,2vw,16px);-webkit-justify-content:center;justify-content:center;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin-bottom:clamp(24px,4vh,42px);}
+.stat-pill{background:rgba(15,25,45,.85);border:1px solid #1f3456;border-radius:50px;padding:clamp(8px,1.5vh,12px) clamp(14px,2.5vw,24px);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:10px;}
+.stat-icon{font-size:clamp(16px,2.5vw,22px);}
+.stat-info{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.stat-val{font-size:clamp(16px,2.8vw,24px);font-weight:800;color:#ffd54f;line-height:1;}
+.stat-lbl{font-size:clamp(9px,1.1vw,11px);color:#4a6a8a;letter-spacing:.5px;text-transform:uppercase;margin-top:2px;}
+
+/* MAIN GRID — desktop 2 col, mobile single col */
+.main-grid{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:clamp(14px,2.5vw,26px);}
+@media(min-width:721px){
+  .main-grid{display:grid;grid-template-columns:1fr 1fr;}
+  .rooms-panel{grid-column:1/-1;}
+  /* Desktop order stays as declared in HTML */
+  .col-create{-webkit-order:1;order:1;}
+  .col-stats{-webkit-order:2;order:2;}
+  .rooms-panel{-webkit-order:3;order:3;}
+}
+/* Mobile order: create(1) → rooms(2) → stats(3) */
+@media(max-width:720px){
+  .col-create{-webkit-order:1;order:1;}
+  .rooms-panel{-webkit-order:2;order:2;}
+  .col-stats{-webkit-order:3;order:3;}
+}
+
+/* PANELS */
+.panel{background:rgba(10,20,38,.88);border:1.5px solid #1c2f50;border-radius:16px;padding:clamp(16px,3vh,26px) clamp(14px,3vw,24px);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.panel-title{font-size:clamp(12px,1.8vw,15px);font-weight:700;color:#8ab4f8;letter-spacing:.4px;margin-bottom:clamp(12px,2vh,18px);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;}
+.panel-title .tico{font-size:clamp(14px,2vw,18px);}
+
+/* INPUTS — font-size ≥16px to prevent iOS auto-zoom */
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:11px;color:#4a6a8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;font-weight:600;}
+.field input{width:100%;padding:clamp(9px,1.5vh,12px) clamp(10px,1.8vw,14px);background:#070f1c;border:1.5px solid #1c2f50;border-radius:9px;color:#e8eaf6;font-size:16px;outline:none;-webkit-transition:border-color .15s;transition:border-color .15s;-webkit-appearance:none;appearance:none;}
+.field input:focus{border-color:#4a90d9;}
+.field input::-webkit-input-placeholder{color:#2a4060;}
+.field input::placeholder{color:#2a4060;}
+.hint-txt{font-size:11px;color:#2a4060;margin-top:4px;}
+
+/* BUTTONS */
+.btn-primary{width:100%;margin-top:14px;padding:clamp(11px,2vh,14px);border:none;border-radius:10px;background:-webkit-linear-gradient(315deg,#ffd54f,#ff8f00);background:linear-gradient(135deg,#ffd54f,#ff8f00);color:#1a0e00;font-size:clamp(13px,1.8vw,15px);font-weight:800;cursor:pointer;letter-spacing:.2px;-webkit-transition:opacity .15s,-webkit-transform .1s;transition:opacity .15s,transform .1s;-webkit-appearance:none;appearance:none;}
+.btn-primary:active{opacity:.85;-webkit-transform:scale(.98);transform:scale(.98);}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed;}
+.btn-secondary{width:100%;margin-top:10px;padding:clamp(10px,1.8vh,13px);border:1.5px solid #1c2f50;border-radius:10px;background:transparent;color:#8ab4f8;font-size:clamp(12px,1.7vw,14px);font-weight:700;cursor:pointer;-webkit-transition:border-color .15s,background .15s;transition:border-color .15s,background .15s;-webkit-appearance:none;appearance:none;}
+.btn-secondary:active{border-color:#4a90d9;background:rgba(74,144,217,.08);}
+
+/* DIVIDER */
+.or-divider{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:10px;margin:14px 0;}
+.or-divider::before,.or-divider::after{content:'';-webkit-flex:1;flex:1;border-top:1px solid #1c2f50;}
+.or-divider span{font-size:11px;color:#2a4060;letter-spacing:.5px;}
+
+/* ROOM LIST */
+.room-list{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:10px;margin-top:2px;}
+.room-card{background:rgba(7,15,28,.9);border:1.5px solid #1c2f50;border-radius:12px;padding:clamp(12px,2vh,16px) clamp(14px,2.5vw,20px);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:clamp(10px,2vw,16px);cursor:pointer;-webkit-transition:border-color .15s,background .15s;transition:border-color .15s,background .15s;position:relative;overflow:hidden;}
+.room-card:active{border-color:#4a90d9;background:rgba(10,22,42,.95);}
+.room-ava{width:clamp(42px,6vw,52px);height:clamp(42px,6vw,52px);border-radius:12px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:clamp(20px,3vw,28px);-webkit-flex-shrink:0;flex-shrink:0;}
+.ava-wait{background:rgba(46,125,50,.15);border:1.5px solid rgba(46,125,50,.3);}
+.ava-live{background:rgba(21,101,192,.15);border:1.5px solid rgba(21,101,192,.3);}
+.ava-done{background:rgba(121,85,72,.15);border:1.5px solid rgba(121,85,72,.3);}
+.room-body{-webkit-flex:1;flex:1;min-width:0;}
+.room-name{font-size:clamp(12px,1.8vw,15px);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.room-meta{font-size:clamp(10px,1.3vw,12px);color:#4a6a8a;display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:8px;}
+.room-meta span{white-space:nowrap;}
+.room-meta .players-pips{display:-webkit-inline-flex;display:inline-flex;gap:3px;-webkit-align-items:center;align-items:center;}
+.pip{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.pip-human{background:#4fc3f7;}
+.pip-ai{background:#2a3a50;}
+.room-right{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:flex-end;align-items:flex-end;gap:5px;-webkit-flex-shrink:0;flex-shrink:0;}
+.badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.4px;white-space:nowrap;}
+.badge-wait{background:rgba(46,125,50,.2);color:#66bb6a;border:1px solid rgba(46,125,50,.3);}
+.badge-live{background:rgba(239,83,80,.18);color:#ef9a9a;border:1px solid rgba(239,83,80,.25);}
+.badge-live::before{content:'● ';font-size:7px;-webkit-animation:blink 1s infinite;animation:blink 1s infinite;}
+@-webkit-keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.badge-done{background:rgba(121,85,72,.2);color:#bcaaa4;border:1px solid rgba(121,85,72,.3);}
+.room-code{font-size:11px;color:#2a4060;font-family:monospace;letter-spacing:2px;}
+.empty-rooms{text-align:center;padding:clamp(28px,5vh,48px) 0;color:#2a4060;}
+.empty-rooms .eim{font-size:40px;margin-bottom:10px;}
+.empty-rooms p{font-size:13px;}
+
+/* LEADERBOARD */
+.lb-table{width:100%;border-collapse:collapse;}
+.lb-table th{font-size:10px;color:#2a4060;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-bottom:1px solid #0e1e34;text-align:left;font-weight:600;}
+.lb-table th:not(:first-child){text-align:center;}
+.lb-table td{padding:clamp(7px,1.2vh,10px) 8px;border-bottom:1px solid rgba(28,47,80,.5);font-size:clamp(11px,1.5vw,13px);}
+.lb-table tr:last-child td{border-bottom:none;}
+.lb-rank{font-weight:800;color:#2a4060;width:28px;}
+.lb-rank.gold{color:#ffd54f;}
+.lb-rank.silver{color:#b0bec5;}
+.lb-rank.bronze{color:#a1887f;}
+.lb-name{font-weight:600;color:#e8eaf6;}
+.lb-wins{color:#4fc3f7;font-weight:700;text-align:center;}
+.lb-losses{color:#ef5350;font-weight:700;text-align:center;}
+.lb-wr{text-align:center;}
+.wr-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}
+.wr-hi{background:rgba(76,175,80,.18);color:#66bb6a;}
+.wr-mid{background:rgba(255,213,79,.12);color:#ffd54f;}
+.wr-lo{background:rgba(239,83,80,.15);color:#ef9a9a;}
+
+/* RECENT MATCHES */
+.match-list{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:8px;}
+.match-item{background:rgba(7,15,28,.8);border:1px solid #0e1e34;border-radius:10px;padding:10px 14px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:12px;}
+.match-icon{font-size:20px;-webkit-flex-shrink:0;flex-shrink:0;}
+.match-body{-webkit-flex:1;flex:1;min-width:0;}
+.match-teams{font-size:clamp(11px,1.5vw,13px);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.match-meta{font-size:10px;color:#2a4060;margin-top:2px;}
+.match-score{font-size:clamp(12px,1.8vw,15px);font-weight:800;color:#ffd54f;-webkit-flex-shrink:0;flex-shrink:0;font-family:monospace;}
+.match-id{font-size:9px;color:#1a2a40;font-family:monospace;margin-top:2px;}
+
+/* REFRESH */
+.refresh-row{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-align-items:center;align-items:center;margin-bottom:10px;}
+.refresh-btn{background:none;border:none;color:#2a5080;cursor:pointer;font-size:12px;padding:4px 8px;border-radius:6px;}
+.last-updated{font-size:10px;color:#1a2a40;}
+
+/* MODAL — iOS: use visibility+opacity instead of display toggle for smooth animation */
+.modal-bg{
+  position:fixed;top:0;right:0;bottom:0;left:0;
+  background:rgba(0,0,0,.85);z-index:200;
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  padding:16px;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  visibility:hidden;opacity:0;
+  -webkit-transition:opacity .18s,visibility .18s;transition:opacity .18s,visibility .18s;
+}
+.modal-bg.open{visibility:visible;opacity:1;}
+.modal{background:#0a1828;border:2px solid #1c2f50;border-radius:16px;padding:clamp(20px,4vh,30px) clamp(18px,4vw,28px);width:100%;max-width:360px;-webkit-animation:mpop .18s ease-out;animation:mpop .18s ease-out;}
+@-webkit-keyframes mpop{from{-webkit-transform:scale(.92);transform:scale(.92);opacity:0}to{-webkit-transform:scale(1);transform:scale(1);opacity:1}}
+@keyframes mpop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:clamp(14px,2.2vw,17px);color:#8ab4f8;font-weight:700;margin-bottom:16px;}
+.modal-btns{display:-webkit-flex;display:flex;gap:10px;margin-top:16px;}
+.mbtn-cancel{-webkit-flex:0 0 auto;flex:0 0 auto;padding:10px 16px;border:1.5px solid #1c2f50;border-radius:9px;background:transparent;color:#5a8aaa;font-size:16px;font-weight:600;cursor:pointer;-webkit-appearance:none;appearance:none;}
+.mbtn-join{-webkit-flex:1;flex:1;padding:10px;border:none;border-radius:9px;background:#1565c0;color:#fff;font-size:16px;font-weight:700;cursor:pointer;-webkit-appearance:none;appearance:none;}
+.mbtn-join:active{background:#1976d2;}
+.m-err{color:#ef5350;font-size:12px;margin-top:8px;min-height:16px;}
+
+/* TABS */
+.tabs{display:-webkit-flex;display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid #0e1e34;padding-bottom:0;}
+.tab{padding:8px 14px;font-size:clamp(11px,1.5vw,13px);font-weight:600;color:#2a5080;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;-webkit-transition:color .15s,border-color .15s;transition:color .15s,border-color .15s;white-space:nowrap;}
+.tab.active{color:#8ab4f8;border-bottom-color:#4a90d9;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+.no-data{text-align:center;padding:clamp(20px,4vh,36px) 0;color:#2a4060;font-size:13px;}
+
+/* LOADING SHIMMER */
+.shimmer{background:-webkit-linear-gradient(left,#0a1828 25%,#0e1e34 50%,#0a1828 75%);background:linear-gradient(90deg,#0a1828 25%,#0e1e34 50%,#0a1828 75%);background-size:200% 100%;-webkit-animation:shimmer 1.5s infinite;animation:shimmer 1.5s infinite;border-radius:6px;height:14px;margin:8px 0;}
+@-webkit-keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#1c2f50;border-radius:4px;}
+</style>
+</head>
+<body>
+
+<!-- FLOATING SUIT PARTICLES -->
+<div id="bg"></div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-suits">♠ ♥ ♦ ♣</div>
+    <div class="hero-title">29 Card Game</div>
+    <div class="hero-sub">Classic South Asian trick-taking · Multiplayer online</div>
+  </div>
+
+  <!-- STAT PILLS -->
+  <div class="stats-row" id="statRow">
+    <div class="stat-pill"><span class="stat-icon">🎮</span><div class="stat-info"><span class="stat-val" id="statMatches">—</span><span class="stat-lbl">Total Matches</span></div></div>
+    <div class="stat-pill"><span class="stat-icon">🟢</span><div class="stat-info"><span class="stat-val" id="statActive">—</span><span class="stat-lbl">Active Players</span></div></div>
+    <div class="stat-pill"><span class="stat-icon">⚡</span><div class="stat-info"><span class="stat-val" id="statRooms">—</span><span class="stat-lbl">Live Rooms</span></div></div>
+  </div>
+
+  <!-- MAIN GRID
+       Desktop: [Create+Join | Leaderboard] then [Room List full width]
+       Mobile:  Create+Join → Room List → Leaderboard (via CSS order) -->
+  <div class="main-grid">
+
+    <!-- col-create: Create + Join -->
+    <div class="col-create">
+      <!-- CREATE -->
+      <div class="panel" style="margin-bottom:clamp(14px,2.5vw,22px)">
+        <div class="panel-title"><span class="tico">🎮</span> Create Room</div>
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="hostName" placeholder="Enter your name" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false">
+        </div>
+        <div class="field">
+          <label>Room Name</label>
+          <input type="text" id="roomName" placeholder="e.g. Friday Night Game" maxlength="30" autocomplete="off" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label>Password <span style="color:#1a3050;font-weight:400">(optional)</span></label>
+          <input type="password" id="roomPass" placeholder="Leave blank for public" autocomplete="new-password">
+          <div class="hint-txt">🔒 Password rooms won't appear in the public list</div>
+        </div>
+        <button class="btn-primary" id="btnCreate" onclick="createRoom()">Create &amp; Enter Room →</button>
+      </div>
+
+      <!-- JOIN BY CODE -->
+      <div class="panel">
+        <div class="panel-title"><span class="tico">🔑</span> Join by Code</div>
+        <div class="field">
+          <label>Room Code</label>
+          <input type="text" id="joinCode" placeholder="e.g. ABC123" maxlength="6" style="text-transform:uppercase;letter-spacing:3px;font-family:monospace;font-size:18px;" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+        </div>
+        <button class="btn-primary" id="btnJoinCode" onclick="joinByCode()">Join Room →</button>
+      </div>
+    </div>
+
+    <!-- col-stats: Leaderboard + Recent Matches -->
+    <div class="panel col-stats" style="display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('lb')">🏆 Leaderboard</div>
+        <div class="tab" onclick="switchTab('matches')">📋 Recent Matches</div>
+      </div>
+      <div class="tab-pane active" id="tabLb">
+        <div id="lbContent"><div class="shimmer"></div><div class="shimmer" style="width:80%"></div><div class="shimmer" style="width:65%"></div></div>
+      </div>
+      <div class="tab-pane" id="tabMatches">
+        <div id="matchContent"><div class="shimmer"></div><div class="shimmer" style="width:85%"></div><div class="shimmer" style="width:70%"></div></div>
+      </div>
+    </div>
+
+    <!-- rooms-panel: Room List (full width on desktop, middle on mobile) -->
+    <div class="panel rooms-panel">
+      <div class="refresh-row">
+        <div class="panel-title" style="margin-bottom:0"><span class="tico">🌐</span> Public Rooms</div>
+        <div style="display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:10px">
+          <span class="last-updated" id="lastUpdated"></span>
+          <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="room-list" id="roomList">
+        <div class="shimmer"></div><div class="shimmer" style="width:90%"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- JOIN MODAL -->
+<div class="modal-bg" id="joinModal">
+  <div class="modal">
+    <h3 id="modalTitle">Join Room</h3>
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="modalName" placeholder="Enter your name" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false">
+    </div>
+    <div id="modalPassWrap" style="display:none">
+      <div class="field">
+        <label>Room Password</label>
+        <input type="password" id="modalPass" placeholder="Enter password" autocomplete="current-password">
+      </div>
+    </div>
+    <div class="m-err" id="modalErr"></div>
+    <div class="modal-btns">
+      <button class="mbtn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="mbtn-join" onclick="confirmJoin()">Join →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ── IDENTITY ────────────────────────────────────────────
+const MY_CLIENT_ID = (()=>{
+  let id = sessionStorage.getItem('29_cid');
+  if (!id) { id='c_'+Math.random().toString(36).slice(2,10); sessionStorage.setItem('29_cid',id); }
+  return id;
+})();
+function getSaved(k) { return sessionStorage.getItem(k)||localStorage.getItem(k)||''; }
+function setSaved(k,v) { sessionStorage.setItem(k,v); localStorage.setItem(k,v); }
+
+// Pre-fill saved name
+const savedName = getSaved('29_pname');
+if (savedName) {
+  document.getElementById('hostName').value = savedName;
+  document.getElementById('modalName').value = savedName;
+}
+
+// ── PARTICLES ───────────────────────────────────────────
+(function spawnParticles() {
+  const suits = ['♠','♥','♦','♣'];
+  const bg = document.getElementById('bg');
+  for (let i=0;i<18;i++) {
+    const el = document.createElement('span');
+    el.className = 'suit-particle';
+    el.textContent = suits[i%4];
+    el.style.cssText = `
+      left:${Math.random()*100}%;
+      color:${i%4<2?'#e8eaf6':'#e53935'};
+      animation-duration:${12+Math.random()*18}s;
+      -webkit-animation-duration:${12+Math.random()*18}s;
+      animation-delay:${-Math.random()*20}s;
+      -webkit-animation-delay:${-Math.random()*20}s;
+      font-size:${16+Math.random()*24}px;
+    `;
+    bg.appendChild(el);
+  }
+})();
+
+// ── TABS ────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['lb','matches'][i]===id));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab'+(id==='lb'?'Lb':'Matches')).classList.add('active');
+}
+
+// ── DATA ─────────────────────────────────────────────────
+let pendingRoomId = null, pendingNeedsPass = false;
+
+async function loadAll() {
+  document.getElementById('lastUpdated').textContent = 'Updating…';
+  await Promise.all([loadRooms(), loadStats()]);
+  document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+async function loadRooms() {
+  try {
+    const r = await fetch('/api/lobby');
+    const rooms = await r.json();
+    renderRooms(rooms.filter(r=>!r.passwordProtected));
+  } catch(e) {
+    document.getElementById('roomList').innerHTML = '<div class="no-data">Could not load rooms</div>';
+  }
+}
+
+async function loadStats() {
+  try {
+    const r = await fetch('/api/stats');
+    const d = await r.json();
+    document.getElementById('statMatches').textContent = d.totalMatches ?? '0';
+    document.getElementById('statActive').textContent  = d.activeUsers  ?? '0';
+    document.getElementById('statRooms').textContent   = d.activeRooms  ?? '0';
+    renderLeaderboard(d.topPlayers||[]);
+    renderRecentMatches(d.recentMatches||[]);
+  } catch(e) {}
+}
+
+function renderRooms(rooms) {
+  const el = document.getElementById('roomList');
+  if (!rooms.length) {
+    el.innerHTML = `<div class="empty-rooms"><div class="eim">🃏</div><p>No public rooms yet.<br>Create one and invite friends!</p></div>`;
+    return;
+  }
+  el.innerHTML = rooms.map(room => {
+    const isWaiting = room.phase==='waiting';
+    const isLive    = ['bidding','trump','playing'].includes(room.phase);
+    const isDone    = room.phase==='matchOver';
+    const avaClass  = isWaiting?'ava-wait':isLive?'ava-live':'ava-done';
+    const icon      = isWaiting?'⏳':isLive?'🎮':isDone?'🏆':'🃏';
+    const badge     = isWaiting?'<span class="badge badge-wait">WAITING</span>':
+                      isLive?'<span class="badge badge-live">LIVE</span>':
+                      '<span class="badge badge-done">FINISHED</span>';
+    const pips = Array(4).fill(0).map((_,i)=>{
+      const name = room.playerDetails?.[i];
+      const cls  = name ? 'pip-human' : 'pip-ai';
+      const tip  = name ? `title="${esc(name)}"` : 'title="AI"';
+      return `<span class="pip ${cls}" ${tip}></span>`;
+    }).join('');
+    return `
+      <div class="room-card" onclick="openModal('${room.id}', false)">
+        <div class="room-ava ${avaClass}">${icon}</div>
+        <div class="room-body">
+          <div class="room-name">${esc(room.name)}</div>
+          <div class="room-meta">
+            <span class="players-pips">${pips} ${room.players}/4</span>
+            <span>Hand #${room.handNumber}</span>
+            <span style="font-family:monospace;letter-spacing:1px;color:#1e3a5a">${room.id}</span>
+          </div>
+        </div>
+        <div class="room-right">${badge}<span class="room-code">${room.id}</span></div>
+      </div>`;
+  }).join('');
+}
+
+function renderLeaderboard(players) {
+  const el = document.getElementById('lbContent');
+  if (!players.length) {
+    el.innerHTML = '<div class="no-data">No matches played yet</div>';
+    return;
+  }
+  const rankClass = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
+  const rankIcon  = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+  el.innerHTML = `<table class="lb-table">
+    <thead><tr><th></th><th style="text-align:left">Player</th><th>W</th><th>L</th><th>Win %</th><th>Hands</th></tr></thead>
+    <tbody>${players.map((p,i)=>{
+      const wr = p.wins+p.losses>0 ? Math.round(p.wins/(p.wins+p.losses)*100) : 0;
+      const wrClass = wr>=60?'wr-hi':wr>=40?'wr-mid':'wr-lo';
+      return `<tr>
+        <td class="lb-rank ${rankClass(i)}">${rankIcon(i)}</td>
+        <td class="lb-name">${esc(p.name)}</td>
+        <td class="lb-wins">${p.wins}</td>
+        <td class="lb-losses">${p.losses}</td>
+        <td class="lb-wr"><span class="wr-pill ${wrClass}">${wr}%</span></td>
+        <td style="text-align:center;color:#2a4060">${p.handsPlayed}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function renderRecentMatches(matches) {
+  const el = document.getElementById('matchContent');
+  if (!matches.length) {
+    el.innerHTML = '<div class="no-data">No matches completed yet</div>';
+    return;
+  }
+  el.innerHTML = `<div class="match-list">${matches.map(m=>{
+    const winTeam = m.winner===1?'S+N':'W+E';
+    const loseTeam = m.winner===1?'W+E':'S+N';
+    const winScore = m.winner===1?m.team1Score:m.team2Score;
+    const loseScore = m.winner===1?m.team2Score:m.team1Score;
+    const players = m.players?.map(p=>p.name).join(', ')||'—';
+    const when = timeAgo(m.finishedAt);
+    const mid = m.matchId?.slice(-8)||m.roomId||'';
+    return `<div class="match-item">
+      <span class="match-icon">🏆</span>
+      <div class="match-body">
+        <div class="match-teams">${winTeam} beat ${loseTeam} · ${esc(m.roomName||'Room')}</div>
+        <div class="match-meta">${players} · ${m.handNumber} hands · ${when}</div>
+        <div class="match-id">ID: ${mid}</div>
+      </div>
+      <div class="match-score">${winScore} – ${loseScore}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function timeAgo(ts) {
+  const d = Date.now()-ts;
+  if (d<60000) return 'Just now';
+  if (d<3600000) return Math.floor(d/60000)+'m ago';
+  if (d<86400000) return Math.floor(d/3600000)+'h ago';
+  return Math.floor(d/86400000)+'d ago';
+}
+
+// ── CREATE / JOIN ────────────────────────────────────────
+async function createRoom() {
+  const hostName = (document.getElementById('hostName').value||'').trim();
+  const roomName = (document.getElementById('roomName').value||'').trim()||'Game Room';
+  const password = (document.getElementById('roomPass').value||'').trim();
+  if (!hostName) { document.getElementById('hostName').focus(); return; }
+  const btn = document.getElementById('btnCreate');
+  btn.disabled=true; btn.textContent='Creating…';
+  try {
+    const r = await fetch('/api/room/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roomName,password,clientId:MY_CLIENT_ID,hostName})});
+    const d = await r.json();
+    if (d.roomId) { setSaved('29_pname',hostName); window.location.href=`/game?room=${d.roomId}`; }
+  } finally { btn.disabled=false; btn.textContent='Create & Enter Room →'; }
+}
+
+async function joinByCode() {
+  const code = (document.getElementById('joinCode').value||'').trim().toUpperCase();
+  if (!code) { document.getElementById('joinCode').focus(); return; }
+  try {
+    const r = await fetch('/api/lobby');
+    const rooms = await r.json();
+    const found = rooms.find(r=>r.id===code);
+    openModal(code, found ? !!found.passwordProtected : true);
+  } catch(e) {
+    openModal(code, false);
+  }
+}
+
+function openModal(roomId, askPass) {
+  pendingRoomId=roomId; pendingNeedsPass=askPass;
+  document.getElementById('modalTitle').textContent = `Join Room ${roomId}`;
+  document.getElementById('modalPassWrap').style.display = askPass?'block':'none';
+  document.getElementById('modalPass').value='';
+  document.getElementById('modalErr').textContent='';
+  const saved = getSaved('29_pname');
+  document.getElementById('modalName').value = saved;
+  document.getElementById('joinModal').classList.add('open');
+  setTimeout(()=>{
+    const nameEl = document.getElementById('modalName');
+    if (!saved) nameEl.focus();
+    else document.getElementById(askPass?'modalPass':'modalName').focus();
+  },80);
+}
+function closeModal() { document.getElementById('joinModal').classList.remove('open'); }
+
+async function confirmJoin() {
+  const name = (document.getElementById('modalName').value||'').trim();
+  const pass = (document.getElementById('modalPass').value||'').trim();
+  const errEl = document.getElementById('modalErr');
+  if (!name) { errEl.textContent='Enter your name.'; document.getElementById('modalName').focus(); return; }
+  errEl.textContent='';
+  try {
+    const r = await fetch('/api/room/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roomId:pendingRoomId,password:pass,clientId:MY_CLIENT_ID})});
+    const d = await r.json();
+    if (r.ok && d.ok) { setSaved('29_pname',name); window.location.href=`/game?room=${d.roomId}`; }
+    else errEl.textContent = d.error||'Could not join room.';
+  } catch(e) { errEl.textContent='Network error. Try again.'; }
+}
+
+function esc(s) { const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+
+document.addEventListener('keydown', e=>{
+  if (e.key==='Enter' && document.getElementById('joinModal').classList.contains('open')) confirmJoin();
+  if (e.key==='Escape') closeModal();
+});
+
+// Close modal on background tap
+document.getElementById('joinModal').addEventListener('click', function(e){
+  if (e.target===this) closeModal();
+});
+
+// ── INIT ─────────────────────────────────────────────────
+loadAll();
+setInterval(loadAll, 8000);
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .catch(function(e){ console.warn('SW registration failed:', e); });
+  });
+}
+</script>
+</body>
+</html>

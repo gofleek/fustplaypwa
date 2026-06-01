@@ -1,0 +1,568 @@
+{
+  "XEZQ7E": {
+    "id": "XEZQ7E",
+    "name": "Break",
+    "password": "",
+    "createdAt": 1779869950231,
+    "lastActivity": 1779880476592,
+    "phase": "waiting",
+    "deck": [
+      {
+        "suit": "\u2666",
+        "value": "Q",
+        "points": 0,
+        "rank": 3
+      },
+      {
+        "suit": "\u2665",
+        "value": "7",
+        "points": 0,
+        "rank": 1
+      },
+      {
+        "suit": "\u2666",
+        "value": "9",
+        "points": 2,
+        "rank": 7
+      },
+      {
+        "suit": "\u2666",
+        "value": "10",
+        "points": 1,
+        "rank": 5
+      },
+      {
+        "suit": "\u2663",
+        "value": "9",
+        "points": 2,
+        "rank": 7
+      },
+      {
+        "suit": "\u2663",
+        "value": "Q",
+        "points": 0,
+        "rank": 3
+      },
+      {
+        "suit": "\u2660",
+        "value": "8",
+        "points": 0,
+        "rank": 2
+      },
+      {
+        "suit": "\u2665",
+        "value": "J",
+        "points": 3,
+        "rank": 8
+      },
+      {
+        "suit": "\u2660",
+        "value": "9",
+        "points": 2,
+        "rank": 7
+      },
+      {
+        "suit": "\u2665",
+        "value": "10",
+        "points": 1,
+        "rank": 5
+      },
+      {
+        "suit": "\u2660",
+        "value": "K",
+        "points": 0,
+        "rank": 4
+      },
+      {
+        "suit": "\u2663",
+        "value": "7",
+        "points": 0,
+        "rank": 1
+      },
+      {
+        "suit": "\u2663",
+        "value": "8",
+        "points": 0,
+        "rank": 2
+      },
+      {
+        "suit": "\u2660",
+        "value": "10",
+        "points": 1,
+        "rank": 5
+      },
+      {
+        "suit": "\u2666",
+        "value": "7",
+        "points": 0,
+        "rank": 1
+      },
+      {
+        "suit": "\u2663",
+        "value": "K",
+        "points": 0,
+        "rank": 4
+      },
+      {
+        "suit": "\u2666",
+        "value": "A",
+        "points": 1,
+        "rank": 6
+      },
+      {
+        "suit": "\u2666",
+        "value": "K",
+        "points": 0,
+        "rank": 4
+      },
+      {
+        "suit": "\u2663",
+        "value": "J",
+        "points": 3,
+        "rank": 8
+      },
+      {
+        "suit": "\u2666",
+        "value": "J",
+        "points": 3,
+        "rank": 8
+      },
+      {
+        "suit": "\u2665",
+        "value": "8",
+        "points": 0,
+        "rank": 2
+      },
+      {
+        "suit": "\u2665",
+        "value": "K",
+        "points": 0,
+        "rank": 4
+      },
+      {
+        "suit": "\u2660",
+        "value": "J",
+        "points": 3,
+        "rank": 8
+      },
+      {
+        "suit": "\u2665",
+        "value": "Q",
+        "points": 0,
+        "rank": 3
+      },
+      {
+        "suit": "\u2660",
+        "value": "7",
+        "points": 0,
+        "rank": 1
+      },
+      {
+        "suit": "\u2660",
+        "value": "A",
+        "points": 1,
+        "rank": 6
+      },
+      {
+        "suit": "\u2663",
+        "value": "A",
+        "points": 1,
+        "rank": 6
+      },
+      {
+        "suit": "\u2663",
+        "value": "10",
+        "points": 1,
+        "rank": 5
+      },
+      {
+        "suit": "\u2660",
+        "value": "Q",
+        "points": 0,
+        "rank": 3
+      },
+      {
+        "suit": "\u2665",
+        "value": "A",
+        "points": 1,
+        "rank": 6
+      },
+      {
+        "suit": "\u2666",
+        "value": "8",
+        "points": 0,
+        "rank": 2
+      },
+      {
+        "suit": "\u2665",
+        "value": "9",
+        "points": 2,
+        "rank": 7
+      }
+    ],
+    "playerHands": [
+      [],
+      [],
+      [],
+      []
+    ],
+    "seats": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "biddingTurn": 1,
+    "currentBid": 17,
+    "highestBidder": 0,
+    "biddingPassedPlayers": [
+      3,
+      2,
+      1
+    ],
+    "trumpSuit": "\u2663",
+    "trumpRevealed": false,
+    "currentTrick": [],
+    "leadSuit": null,
+    "currentTurn": 0,
+    "team1Points": 0,
+    "team2Points": 0,
+    "trickCount": 0,
+    "awaitingTrickClear": false,
+    "matchFinished": false,
+    "team1Score": 0,
+    "team2Score": -3,
+    "handNumber": 16,
+    "pendingHandResult": null,
+    "matchOver": false,
+    "matchWinner": null,
+    "aiTakeover": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "gameLog": [
+      {
+        "msg": "\ud83c\udfc6 South(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "\u274c Team 1 failed bid of 20",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83d\udcca Match: S+N -1 | W+E -3",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83c\udccf Hand #15 \u2014 BIDDING. North(AI) starts.",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83d\udcca Score: S+N -1 | W+E -3",
+        "type": "system"
+      },
+      {
+        "msg": "North(AI) bid 18",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) passed",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) passed",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) passed",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc5 North(AI) won bid at 18!",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83d\udd12 Trump chosen by North(AI) (hidden)",
+        "type": "system"
+      },
+      {
+        "msg": "\u25b6 PLAY \u2014 North(AI) leads",
+        "type": "system"
+      },
+      {
+        "msg": "North(AI) played A\u2660",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played 7\u2660",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played J\u2660",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udccf TRUMP REVEALED! \u2663 \u2014 played by East(AI)",
+        "type": "system"
+      },
+      {
+        "msg": "East(AI) played 7\u2663",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 East(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played A\u2665",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played 8\u2665",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played 7\u2665",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played Q\u2665",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 East(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played 10\u2666",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played A\u2663",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played 7\u2666",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played J\u2666",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 North(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played J\u2663",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played K\u2663",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played 9\u2666",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played 8\u2663",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 North(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played 10\u2660",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played Q\u2660",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played 8\u2660",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played Q\u2663",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 East(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played K\u2666",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played 9\u2663",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played 8\u2666",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played Q\u2666",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 North(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played 9\u2660",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played K\u2665",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played K\u2660",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played 10\u2663",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 East(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played 9\u2665",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played J\u2665",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played A\u2666",
+        "type": ""
+      },
+      {
+        "msg": "South(AI) played 10\u2665",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc6 North(AI) won trick",
+        "type": ""
+      },
+      {
+        "msg": "\u2705 Team 1 made bid of 18",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83d\udcca Match: S+N 0 | W+E -3",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83c\udccf Hand #16 \u2014 BIDDING. South(AI) starts.",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83d\udcca Score: S+N 0 | W+E -3",
+        "type": "system"
+      },
+      {
+        "msg": "South(AI) bid 17",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) passed",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) passed",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) passed",
+        "type": ""
+      },
+      {
+        "msg": "\ud83c\udfc5 South(AI) won bid at 17!",
+        "type": "system"
+      },
+      {
+        "msg": "\ud83d\udd12 Trump chosen by South(AI) (hidden)",
+        "type": "system"
+      },
+      {
+        "msg": "\u25b6 PLAY \u2014 South(AI) leads",
+        "type": "system"
+      },
+      {
+        "msg": "South(AI) played A\u2666",
+        "type": ""
+      },
+      {
+        "msg": "East(AI) played J\u2666",
+        "type": ""
+      },
+      {
+        "msg": "North(AI) played 7\u2666",
+        "type": ""
+      },
+      {
+        "msg": "West(AI) played K\u2666",
+        "type": ""
+      },
+      {
+        "msg": "\u26a1 Server restarted \u2014 AI resumed all human seats for this hand.",
+        "type": "system"
+      },
+      {
+        "msg": "\u26a1 Server restarted \u2014 AI resumed all human seats for this hand.",
+        "type": "system"
+      },
+      {
+        "msg": "Phone sat at South",
+        "type": "system"
+      },
+      {
+        "msg": "\u23f0 Phone unresponsive \u2014 AI took over South",
+        "type": "system"
+      },
+      {
+        "msg": "Phone sat at South",
+        "type": "system"
+      },
+      {
+        "msg": "Phone left South",
+        "type": "system"
+      },
+      {
+        "msg": "Rabbi sat at South",
+        "type": "system"
+      },
+      {
+        "msg": "\u23f0 Rabbi unresponsive \u2014 AI took over South",
+        "type": "system"
+      },
+      {
+        "msg": "\u26a1 Server restarted \u2014 AI resumed all human seats for this hand.",
+        "type": "system"
+      },
+      {
+        "msg": "Phone sat at East",
+        "type": "system"
+      },
+      {
+        "msg": "Rabbi sat at South",
+        "type": "system"
+      },
+      {
+        "msg": "\u26a1 Server restarted \u2014 AI resumed all human seats for this hand.",
+        "type": "system"
+      }
+    ]
+  }
+}
