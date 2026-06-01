@@ -2,7 +2,7 @@ const http = require("http");
 const fs   = require("fs");
 const path = require("path");
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const SUITS     = ["♠","♥","♦","♣"];
 const VALUES    = ["7","8","Q","K","10","A","9","J"];
@@ -1017,4 +1017,3 @@ if (!fs.existsSync(MATCHES_FILE)) saveJSON(MATCHES_FILE, []);
 console.log(`Data files at: ${DATA_DIR}`);
 
 server.listen(PORT, ()=>console.log(`29 Card Game server on http://localhost:${PORT}`));
-
