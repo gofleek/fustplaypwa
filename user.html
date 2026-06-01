@@ -15,31 +15,25 @@
 <title>29 Card Game</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,'Segoe UI',Arial,sans-serif;}
-html,body{width:100%;height:100%;background:#06080d;color:#e8eaf6;overflow:hidden;touch-action:manipulation;-webkit-overflow-scrolling:touch;}
-/* iOS Safari full-height fix — 100dvh not supported on older iOS; use min-height fallback */
-@media(max-width:680px){
-  html,body{
-    height:100vh;
-    height:-webkit-fill-available;
-    min-height:-webkit-fill-available;
-  }
+html{width:100%;height:100%;}
+body{width:100%;height:100%;background:#06080d;color:#e8eaf6;overflow:hidden;touch-action:manipulation;-webkit-overflow-scrolling:touch;}
+/* PWA full-height fix: use dvh (dynamic viewport) so standalone mode fills the screen correctly.
+   Fallback chain: dvh (Chrome 108+, Safari 15.4+) → -webkit-fill-available → 100vh */
+html,body{
+  height:100vh;                    /* base fallback */
+  height:-webkit-fill-available;   /* iOS Safari PWA */
+  height:100dvh;                   /* modern: excludes browser chrome in both PWA and browser */
 }
-
-/* ROTATE NUDGE */
-#rotateNudge{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background:#06080d;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;gap:18px;}
-#rotateNudge .ri{font-size:56px;-webkit-animation:rspin 2s ease-in-out infinite;animation:rspin 2s ease-in-out infinite;}
-@-webkit-keyframes rspin{0%,100%{-webkit-transform:rotate(0);transform:rotate(0)}50%{-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}}
-@keyframes rspin{0%,100%{transform:rotate(0)}50%{transform:rotate(-90deg)}}
-#rotateNudge p{font-size:15px;color:#8ab4f8;text-align:center;padding:0 28px;}
-@media(max-width:767px) and (orientation:portrait){#rotateNudge{display:flex;}}
-
-/* GAME SCREEN */
-#gameScreen{position:absolute;top:0;right:0;bottom:0;left:0;background:-webkit-radial-gradient(center 44%,circle,#0d2218 0%,#05070a 85%);background:radial-gradient(circle at 50% 44%,#0d2218 0%,#05070a 85%);overflow:hidden;}
-@media(max-width:680px){
-  #gameScreen{
-    height:100vh;
-    height:-webkit-fill-available;
-  }
+#gameScreen{
+  position:fixed;                  /* fixed beats absolute for PWA — survives soft-keyboard resize */
+  top:0;right:0;bottom:0;left:0;
+  width:100%;
+  height:100vh;
+  height:-webkit-fill-available;
+  height:100dvh;
+  background:-webkit-radial-gradient(center 44%,circle,#0d2218 0%,#05070a 85%);
+  background:radial-gradient(circle at 50% 44%,#0d2218 0%,#05070a 85%);
+  overflow:hidden;
 }
 
 .topbar{position:absolute;top:0;left:0;right:0;height:clamp(38px,6vh,48px);background:#0a1220;border-bottom:1px solid #182336;display:flex;align-items:center;padding:0 8px;gap:6px;z-index:30;}
@@ -188,7 +182,7 @@ html,body{width:100%;height:100%;background:#06080d;color:#e8eaf6;overflow:hidde
   overflow:visible;
   width:min(
     calc(100% - 30px),
-    calc((100vh - var(--topbar-h) - var(--hand-h) - 10px) * 1.45)
+    calc((100dvh - var(--topbar-h) - var(--hand-h) - 10px) * 1.45)
   );
   aspect-ratio:1.9/1;
 }
@@ -196,7 +190,7 @@ html,body{width:100%;height:100%;background:#06080d;color:#e8eaf6;overflow:hidde
   .felt-table{
     width:min(
       calc(100% - 2px),
-      calc((100vh - var(--topbar-h) - var(--hand-h) - 4px) * 1.75)
+      calc((100dvh - var(--topbar-h) - var(--hand-h) - 4px) * 1.75)
     );
   }
 }
@@ -496,10 +490,8 @@ html,body{width:100%;height:100%;background:#06080d;color:#e8eaf6;overflow:hidde
 </style>
 </head>
 <body>
-<div id="rotateNudge">
-  <div class="ri">📱</div>
-  <p>Rotate to <strong>landscape</strong> to play</p>
-</div>
+
+
 
 <div id="gameScreen">
   <div class="topbar">
